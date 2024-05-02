@@ -3,6 +3,7 @@ import express from 'express'
 import zod from 'zod'
 
 const router = express.Router();
+
 const { User, Account } = require("../db");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
@@ -140,4 +141,4 @@ router.get("/bulk", async (req, res) => {
     })
 })
 
-module.exports = router;
+export default router;
