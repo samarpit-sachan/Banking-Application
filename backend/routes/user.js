@@ -1,22 +1,22 @@
 // backend/routes/user.js
 import express from 'express'
 import zod from 'zod'
+import  User  from '../models/User.js'
+import  authMiddleware  from '../middleware.js'
+import  JWT_SECRET  from '../config.js'
+import jwt from "jsonwebtoken"
 
-const router = express.Router();
-
-const { User, Account } = require("../db");
-const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config");
-const  { authMiddleware } = require("../middleware");
+const router = express.Router()
 
 const signupBody = zod.object({
     username: zod.string().email(),
-	firstName: zod.string(),
-	lastName: zod.string(),
-	password: zod.string()
+    firstName: zod.string(),
+    lastName: zod.string(),
+    password: zod.string()
 })
 
 router.post("/signup", async (req, res) => {
+    console.log('ehe',req)
     const { success } = signupBody.safeParse(req.body)
     if (!success) {
         return res.status(411).json({
@@ -60,7 +60,7 @@ router.post("/signup", async (req, res) => {
 
 const signinBody = zod.object({
     username: zod.string().email(),
-	password: zod.string()
+    password: zod.string()
 })
 
 router.post("/signin", async (req, res) => {
@@ -80,21 +80,21 @@ router.post("/signin", async (req, res) => {
         const token = jwt.sign({
             userId: user._id
         }, JWT_SECRET);
-  
+
         res.json({
             token: token
         })
         return;
     }
 
-    
+
     res.status(411).json({
         message: "Error while logging in"
     })
 })
 
 const updateBody = zod.object({
-	password: zod.string().optional(),
+    password: zod.string().optional(),
     firstName: zod.string().optional(),
     lastName: zod.string().optional(),
 })
@@ -141,4 +141,4 @@ router.get("/bulk", async (req, res) => {
     })
 })
 
-export default router;
+export { router as userRouter }
